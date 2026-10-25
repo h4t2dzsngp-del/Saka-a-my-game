@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>釣って育てる水族館</title>
+<style>
+:root{--bg:#e3f0f5;--card:#fff;--tab:#c5dde5;--ink:#0d3445;--sub:#5d7f8e;--pri:#11688a;--act:#db4830;--line:#cfe3ea;--water:#c5dde5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1f29;--card:#14303d;--tab:#1b3f4f;--ink:#e3f0f5;--sub:#8fb2c0;--pri:#2a9bc6;--line:#24485a;--water:#1b3f4f;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif}
+main{max-width:620px;margin:0 auto;padding:16px 16px 48px}
+.top{display:flex;justify-content:space-between;align-items:flex-end}
+.lbl{color:var(--sub);font-size:14px}
+#money{font-size:52px;font-weight:800;line-height:1.1;letter-spacing:-1px}
+.r{text-align:right;color:var(--sub);font-size:16px;line-height:1.7}
+nav{display:flex;background:var(--tab);border-radius:16px;padding:6px;margin:14px 0}
+nav button{flex:1;border:0;background:none;color:var(--sub);font:700 14px inherit;font-family:inherit;padding:12px 0;border-radius:12px;cursor:pointer}
+nav button.on{background:var(--card);color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
+.spot{text-align:center;color:var(--sub);font-size:15px;margin-bottom:8px}
+.water{height:150px;border-radius:14px;background:linear-gradient(#8fd6ea,#2a86ad);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center}
+.water svg{width:96px;height:60px}
+.bar{position:relative;height:30px;border-radius:15px;background:var(--water);overflow:hidden;margin:14px 0}
+.zone{position:absolute;top:0;bottom:0;background:#3cb878;opacity:.85}.zone.gold{background:#f0b429;opacity:1}
+#mk{position:absolute;top:0;bottom:0;width:8px;margin-left:-4px;background:var(--act);border-radius:4px;box-shadow:0 0 0 2px #fff}
+.msg{text-align:center;font-size:18px;margin:0 0 14px}
+.baits{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.baits button{flex:1 1 auto;border:1px solid var(--line);background:var(--card);color:var(--sub);font:inherit;font-family:inherit;font-size:15px;padding:13px 10px;border-radius:12px;cursor:pointer}
+.baits button.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.baits button:disabled{opacity:.55}
+.cast{width:100%;border:0;background:var(--act);color:#fff;font:800 20px inherit;font-family:inherit;padding:20px;border-radius:14px;cursor:pointer}
+.cast:disabled{opacity:.6}
+.cast.bite{background:#e8a317}
+h3{margin:22px 0 10px;font-size:17px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.row b{font-size:19px}
+.row small{display:block;color:var(--sub);margin-top:6px;font-size:14px}
+.buy{border:0;background:var(--pri);color:#fff;font:800 20px inherit;font-family:inherit;padding:12px 16px;border-radius:12px;cursor:pointer;white-space:nowrap}
+.buy:disabled{opacity:.4}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px}
+.cell{background:var(--bg);border-radius:12px;padding:8px 2px;text-align:center;font-size:11px;color:var(--sub)}
+.cell svg{width:52px;height:33px}
+.cell em{display:block;font-style:normal;color:var(--ink);font-weight:700;font-size:11px;margin-top:2px}
+.cell.no svg{filter:brightness(0) opacity(.25)}
+.pill{display:inline-block;background:var(--tab);border-radius:10px;padding:3px 9px;font-size:13px}
+.tank{position:relative;height:320px;border-radius:20px;overflow:hidden;background:linear-gradient(#9be0f0 0%,#2c8fb8 55%,#145a80 100%);margin-bottom:12px}
+.sand{position:absolute;left:0;right:0;bottom:0;height:34px;background:#e6d3a3;border-radius:50% 50% 0 0/20px 20px 0 0}
+.weed{position:absolute;bottom:20px;width:26px;height:90px}
+.sw{position:absolute;width:48px;animation:sw var(--d) linear infinite alternate;animation-delay:var(--dl)}
+.sw>div{animation:fl calc(var(--d)*2) steps(1,end) infinite;animation-delay:var(--dl)}
+.sw svg{display:block;width:48px;height:30px}
+@keyframes sw{from{left:2%}to{left:calc(98% - 48px)}}
+@keyframes fl{0%{transform:scaleX(-1)}50%{transform:scaleX(1)}100%{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.sw,.sw>div{animation:none}.sw{left:calc(var(--x)*1%)}}
+.hall{display:grid;gap:12px;margin-bottom:12px}
+.win{border:0;padding:0;background:none;text-align:left;cursor:pointer;font:inherit;color:inherit}
+.win .tank{margin:0;border:6px solid #1b2c36;box-shadow:inset 0 0 20px rgba(0,0,0,.25)}
+.tank.mini .weed{display:none}
+.cap{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.stk{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);margin-top:8px}
+.nm{font:800 19px inherit;font-family:inherit;color:var(--ink);background:none;border:0;border-bottom:2px dashed var(--line);width:100%;padding:2px 0}
+.stk svg{width:52px;height:33px}.stk div{flex:1;font-size:15px}.stk small{display:block;color:var(--sub)}
+.sm{border:0;background:var(--pri);color:#fff;font:700 15px inherit;font-family:inherit;padding:9px 14px;border-radius:10px;cursor:pointer}.sm:disabled{opacity:.4}.sm.g{background:var(--tab);color:var(--ink)}
+details{margin-top:6px}summary{font-weight:700;font-size:17px;cursor:pointer}
+.help p{margin:10px 0;line-height:1.7;font-size:15px}
+</style>
+</head>
+<body>
+<main>
+ <div class="top"><div><div class="lbl">所持金</div><div id="money">¥0</div></div><div class="r"><div id="ps"></div><div id="zk"></div></div></div>
+ <nav id="nav"></nav>
+ <div id="view"></div>
+</main>
+<script>
+const SPOTS=[["浅瀬の礁",0,1],["深海の谷",2500,6],["氷の入江",15000,25],["珊瑚の楽園",80000,90],["竜宮の底",400000,350]];
+const BASES=[
+["小アジ","メダカ","イワシ","エビ","カニ","ヒトデ","フグ","ウミウシ","イカ","ウミガメ"],
+["タコ","ロブスター","マグロ","カツオ","クラゲ","アンコウ","ウツボ","サメ","イルカ","クジラ"],
+["ペンギン","アザラシ","ワカサギ","オットセイ","シャチ","ユキガニ","氷クラゲ","セイウチ","タラ","イワナ"],
+["クマノミ","ナンヨウハギ","チョウチョウウオ","ハリセンボン","マンタ","ウミヘビ","シャコ","ヤドカリ","ハタ","ジンベエ"],
+["リュウグウノツカイ","深海ザメ","提灯魚","ダイオウイカ","古代魚","人魚の涙","海の龍","金のタイ","真珠貝","海神の使い"]];
+const PRE=["","縞","紅","黄金","幻"],TW=[60,30,14,6,2];
+const FISH=[];
+BASES.forEach((bs,s)=>PRE.forEach((p,t)=>bs.forEach((b,k)=>FISH.push({n:p+b,s,t,w:TW[t]*(1-k*.06),v:Math.max(1,Math.round((1+k*.8)*(1+t*t*.9)*SPOTS[s][2]))}))));
+const BAITS=[["ふつうのエサ",0,0,1],["オキアミ",50,0,2],["イカの切り身",400,1,3],["活きエビ",3000,2,4],["黄金ミミズ",20000,3,4]];
+const TN=["ふつう","縞","紅","黄金","幻"],baitText=i=>"釣れる魚："+TN[BAITS[i][2]]+"〜"+TN[BAITS[i][3]];
+const TABS=["スポット","釣り","水族館","設備","図鑑","設定"];
+const def=()=>({money:50,stock:{},tanks:Array.from({length:5},(_,i)=>({on:i?0:1,cap:4,fish:{}})),seen:{},baits:[0,0,0,0,0],bait:0,rod:0,reel:0,cap:5,spot:0,spots:[1,0,0,0,0],last:null});
+let S=def(),tab=1,cast=null,looping=false,openTank=null,expSel=-1;
+try{const j=localStorage.getItem("tsuri2");if(j)S=Object.assign(def(),JSON.parse(j))}catch(e){}
+if(S.fish){for(const i in S.fish)S.stock[i]=(S.stock[i]||0)+S.fish[i];delete S.fish}
+const $=id=>document.getElementById(id);
+const save=()=>{try{localStorage.setItem("tsuri2",JSON.stringify(S))}catch(e){}};
+const cnt=()=>Object.values(S.stock).reduce((a,b)=>a+b,0);
+const THEME=["linear-gradient(#9be0f0,#2c8fb8 55%,#145a80)","linear-gradient(#1b4a7a,#0b2447 60%,#050f24)","linear-gradient(#d8f2fa,#8fcbe0 55%,#4a93b8)","linear-gradient(#7ff0e0,#30b5b0 55%,#1a7f8a)","linear-gradient(#6a3fb0,#31207a 55%,#150b44)"],TCOST=[0,3000,20000,100000,500000];
+const tankIps=t=>Object.entries(S.tanks[t].fish).reduce((a,[i,n])=>a+FISH[i].v*n*(FISH[i].s===t?1.5:1),0)*(1+Object.keys(S.seen).length*.01);
+const ips=()=>S.tanks.reduce((a,T,t)=>a+(T.on?tankIps(t):0),0);
+const expCost=t=>Math.round(300*Math.pow(1.7,(S.tanks[t].cap-4)/2)*(t+1));
+const nameOf=t=>S.tanks[t].name||SPOTS[t][0]+"の水槽";
+function rename(t,v){S.tanks[t].name=v.trim().slice(0,12);save();render()}
+const rodCost=()=>Math.round(100*Math.pow(2.4,S.rod));
+const capCost=()=>Math.round(200*Math.pow(1.5,(S.cap-5)/3));
+const yen=n=>"¥"+Math.floor(n).toLocaleString();
+
+function art(i){
+  const h=(i*37)%360,h2=(h+40+i%5*25)%360,s=i%4,b=`hsl(${h},70%,55%)`,f=`hsl(${h2},70%,42%)`,l=`hsl(${h},80%,80%)`;
+  const body=[["30","20","22","12"],["28","20","18","17"],["30","20","27","7"],["30","20","20","10"]][s];
+  const tail=s===1?"44,20 62,8 62,32":s===2?"55,20 63,11 63,29":"48,20 63,7 63,33";
+  const fin=s===3?`<polygon points="20,11 30,0 40,11" fill="${f}"/>`:`<polygon points="22,${20-body[3]+2} 32,${20-body[3]-4} 40,${20-body[3]+3}" fill="${f}"/>`;
+  const dec=i%3===0?`<path d="M24 ${20-body[3]+2}v${body[3]*2-4}M32 ${20-body[3]+1}v${body[3]*2-2}M40 ${20-body[3]+3}v${body[3]*2-6}" stroke="${f}" stroke-width="3" fill="none"/>`:i%3===1?`<ellipse cx="30" cy="${20+body[3]*.4}" rx="${body[2]*.7}" ry="${body[3]*.4}" fill="${l}"/>`:`<circle cx="30" cy="20" r="2.5" fill="${f}"/><circle cx="38" cy="22" r="2" fill="${f}"/>`;
+  return `<svg viewBox="0 0 64 40">${fin}<polygon points="${tail}" fill="${f}"/><ellipse cx="${body[0]}" cy="${body[1]}" rx="${body[2]}" ry="${body[3]}" fill="${b}"/>${dec}<circle cx="14" cy="17" r="3.2" fill="#fff"/><circle cx="13.2" cy="17" r="1.5" fill="#123"/></svg>`;
+}
+function pick(lo,hi){
+  const luck=S.rod*.15;
+  const ids=FISH.map((f,i)=>i).filter(i=>FISH[i].s===S.spot&&FISH[i].t>=lo&&FISH[i].t<=hi);
+  const w=ids.map(i=>Math.pow(FISH[i].w,1/(1+luck)));
+  let r=Math.random()*w.reduce((a,b)=>a+b,0);
+  for(let k=0;k<ids.length;k++){r-=w[k];if(r<=0)return ids[k]}
+  return ids[0];
+}
+function startCast(){
+  if(cast)return;
+  if(S.bait>0){if(S.baits[S.bait]>0)S.baits[S.bait]--;else S.bait=0}
+  cast={ph:"wait"};render();
+  cast.tm=setTimeout(()=>{const a=BAITS[S.bait][2],b=BAITS[S.bait][3],m=Math.max(a,b-1),rare=pick(m,b),norm=pick(a,m);
+    Object.assign(cast,{ph:"bite",rare,norm,zs:6+Math.random()*58,t0:performance.now(),period:1400-FISH[rare].t*240,p:0});render()},900+Math.random()*1800);
+}
+function frame(t){
+  if(!cast||cast.ph!=="bite"){looping=false;return}
+  const x=((t-cast.t0)/cast.period)%2;cast.p=x<1?x:2-x;
+  const m=$("mk");if(m)m.style.left=cast.p*100+"%";
+  requestAnimationFrame(frame);
+}
+function strike(){
+  if(!cast||cast.ph!=="bite")return;
+  const z=cast.zs,p=cast.p*100,hit=p>=z&&p<=z+36,perfect=p>=z+11&&p<=z+25,rare=cast.rare,norm=cast.norm;
+  cast=null;
+  if(!hit)S.last={miss:1};
+  else{const id=perfect?rare:norm;let sold=false;
+    if(cnt()>=S.cap){S.money+=FISH[id].v*15;sold=true}else S.stock[id]=(S.stock[id]||0)+1;
+    S.seen[id]=1;S.last={id,sold,perfect}}
+  save();render();
+}
+function buy(k){
+  if(k==="rod"&&S.rod<10&&S.money>=rodCost()){S.money-=rodCost();S.rod++}
+  else if(k==="cap"&&S.money>=capCost()){S.money-=capCost();S.cap+=3}
+  else if(k[0]==="x"){const t=+k.slice(1),c=expCost(t);if(S.tanks[t].cap<20&&S.money>=c){S.money-=c;S.tanks[t].cap+=2}}
+  else if(k[0]==="b"){const i=+k.slice(1);if(S.money>=BAITS[i][1]){S.money-=BAITS[i][1];S.baits[i]+=5}}
+  save();render();
+}
+function go(i){S.spot=i;save();render()}
+function unlock(i){if(S.money>=SPOTS[i][1]){S.money-=SPOTS[i][1];S.spots[i]=1;S.spot=i;save();render()}}
+function setBait(i){S.bait=i;render()}
+let askReset=false;function reset(y){if(y===undefined)askReset=true;else{askReset=false;if(y){S=def();save()}}render()}
+const item=(t,d,k,c,cost)=>`<div class="card"><div class="row"><div><b>${t}</b><small>${d}</small></div><button class="buy" data-c="${cost}" onclick="buy('${k}')">${c}</button></div></div>`;
+
+function fishView(){
+  const l=S.last,f=l&&FISH[l.id];let water,btn;
+  if(cast&&cast.ph==="wait")water=`<b>アタリを待っています…</b>`;
+  else if(cast)water=`<b>アタリ！</b><span>枠の中で止めよう</span>`;
+  else if(l&&l.miss)water=`<b>逃げられた…</b><span>もう一度挑戦しよう</span>`;
+  else if(f)water=`${art(l.id)}<b>${f.n}が釣れた！${l.perfect?" レア！":""}</b><span>${l.sold?"バケツが満員のため "+yen(f.v*15)+" で売却":"バケツに入れた"}</span>`;
+  else water=`<b>釣り糸を垂らそう</b>`;
+  const bite=cast&&cast.ph==="bite";
+  const bar=`<div class="bar">${bite?`<div class="zone" style="left:${cast.zs}%;width:11%"></div><div class="zone gold" style="left:${cast.zs+11}%;width:14%"></div><div class="zone" style="left:${cast.zs+25}%;width:11%"></div><div id="mk" style="left:${cast.p*100}%"></div>`:""}</div>`;
+  btn=bite?`<button class="cast bite" onclick="strike()">いまだ！</button>`:`<button class="cast" ${cast?"disabled":""} onclick="startCast()">${cast?"待っています…":"釣り糸を垂らす"}</button>`;
+  const baits=BAITS.map((b,i)=>`<button class="${S.bait===i?"on":""}" ${(i&&!S.baits[i])||cast?"disabled":""} onclick="setBait(${i})">${b[0]}${i?" ×"+S.baits[i]:""}</button>`).join("");
+  const shop=BAITS.slice(1).map((b,j)=>item(b[0]+" ×5",baitText(j+1),"b"+(j+1),yen(b[1]),b[1])).join("");
+  return `<div class="card"><div class="spot">釣り場：${SPOTS[S.spot][0]}</div><div class="water">${water}</div>${bar}
+   <p class="msg">${bite?"レア度 "+"★".repeat(FISH[cast.rare].t+1)+"（金＝レア／緑＝ふつう）":"エサを選んで、釣り糸を垂らそう"}</p>
+   <div class="baits">${baits}</div><p class="lbl" style="text-align:center;margin:-4px 0 14px">${baitText(S.bait)}</p>${btn}</div>
+   <h3>道具</h3>
+   ${item(`釣り竿を強化 Lv.${S.rod}`,"レアな魚が釣れやすくなる","rod",S.rod>=10?"MAX":yen(rodCost()),S.rod>=10?1e18:rodCost())}
+   <h3>エサを買う</h3>${shop}`;
+}
+function spotView(){
+  return SPOTS.map((s,i)=>{const own=S.spots[i];
+   const got=FISH.filter((f,k)=>f.s===i&&S.seen[k]).length;
+   const btn=own?(S.spot===i?`<span class="pill">釣り中</span>`:`<button class="buy" onclick="go(${i})">行く</button>`)
+     :`<button class="buy" data-c="${s[1]}" onclick="unlock(${i})">${yen(s[1])}</button>`;
+   return `<div class="card"><div class="row"><div><b>${s[0]}</b><small>図鑑 ${got}/50　魚の価値 ×${s[2]}</small></div>${btn}</div></div>`}).join("");
+}
+function scene(t,h){
+  let sw="",n=0;
+  Object.entries(S.tanks[t].fish).forEach(([i,c])=>{for(let k=0;k<c;k++,n++){
+    const hs=(n*7919+i*131)%1000;
+    sw+=`<div class="sw" style="top:${6+hs%58}%;--d:${7+hs%9}s;--dl:-${hs%13}s;--x:${hs%90}"><div>${art(i)}</div></div>`}});
+  const weed=`<svg class="weed" style="left:8%" viewBox="0 0 26 90"><path d="M13 90C0 70 26 55 13 35S20 8 13 0" stroke="#2e9e5b" stroke-width="6" fill="none" stroke-linecap="round"/></svg><svg class="weed" style="left:84%" viewBox="0 0 26 90"><path d="M13 90C26 65 0 50 13 30S8 10 13 4" stroke="#37b36b" stroke-width="6" fill="none" stroke-linecap="round"/></svg>`;
+  return `<div class="tank${h<200?" mini":""}" style="height:${h}px;background:${THEME[t]}">${weed}${sw}<div class="sand"></div></div>`;
+}
+const nIn=T=>Object.values(T.fish).reduce((a,b)=>a+b,0);
+function openT(t){if(S.money>=TCOST[t]){S.money-=TCOST[t];S.tanks[t].on=1;openTank=t;save();render()}}
+function place(t,i){const T=S.tanks[t];if(S.stock[i]>0&&nIn(T)<T.cap){S.stock[i]--;T.fish[i]=(T.fish[i]||0)+1;save();render()}}
+function take(t,i){const T=S.tanks[t];if(T.fish[i]>0&&cnt()<S.cap){T.fish[i]--;S.stock[i]=(S.stock[i]||0)+1;save();render()}}
+function aquaView(){
+  if(openTank!==null)return detailView();
+  const wins=S.tanks.map((T,t)=>{
+    if(!T.on)return `<div class="card"><div class="row"><div><b>${SPOTS[t][0]}の水槽</b><small>まだ閉まっています</small></div><button class="buy" data-c="${TCOST[t]}" onclick="openT(${t})">${yen(TCOST[t])}</button></div></div>`;
+    return `<button class="win" onclick="openTank=${t};render()">${scene(t,130)}<div class="cap"><b>${nameOf(t)}</b><span class="pill">${nIn(T)}/${T.cap}匹　毎秒 ${yen(tankIps(t))}</span></div></button>`}).join("");
+  return `<div class="card"><div class="row"><b>バケツ ${cnt()}/${S.cap}匹</b><span class="pill">図鑑ボーナス +${Object.keys(S.seen).length}%</span></div><p class="lbl" style="margin:8px 0 0">水槽をタップして、魚を入れよう。</p></div><div class="hall">${wins}</div>`;
+}
+function detailView(){
+  const t=openTank,T=S.tanks[t],n=nIn(T),full=n>=T.cap,ec=expCost(t);
+  const stock=Object.entries(S.stock).filter(e=>e[1]>0).map(([i,c])=>`<div class="stk">${art(i)}<div>${FISH[i].n} ×${c}<small>毎秒 ${yen(FISH[i].v*(FISH[i].s===t?1.5:1))}${FISH[i].s===t?"（相性◎）":""}</small></div><button class="sm" ${full?"disabled":""} onclick="place(${t},${i})">入れる</button></div>`).join("");
+  const inside=Object.entries(S.tanks[t].fish).filter(e=>e[1]>0).map(([i,c])=>`<div class="stk">${art(i)}<div>${FISH[i].n} ×${c}</div><button class="sm g" ${cnt()>=S.cap?"disabled":""} onclick="take(${t},${i})">戻す</button></div>`).join("");
+  return `<button class="sm g" onclick="openTank=null;render()">← 水族館に戻る</button><div style="height:10px"></div>${scene(t,280)}
+  <div class="card"><div class="row"><div style="flex:1"><input class="nm" value="${nameOf(t)}" maxlength="12" aria-label="水槽の名前" onchange="rename(${t},this.value)"><small>${n}/${T.cap}匹　名前をタップして変更</small></div><span class="pill">毎秒 ${yen(tankIps(t))}</span></div></div>
+  <div class="card"><b>水槽の魚</b>${inside||`<p class="lbl">まだいません。</p>`}</div>
+  <div class="card"><b>バケツ</b>${stock||`<p class="lbl">釣った魚がここに入ります。</p>`}</div>
+  ${item("水槽を拡張（+2匹）","もっと魚を飼える","x"+t,T.cap>=20?"MAX":yen(ec),T.cap>=20?1e18:ec)}`;
+}
+function gearView(){
+  const opts=[-1].concat(S.tanks.map((T,t)=>t).filter(t=>S.tanks[t].on));
+  if(!opts.includes(expSel))expSel=-1;
+  const chips=opts.map(t=>`<button class="${t===expSel?"on":""}" onclick="expSel=${t};render()">${t<0?"バケツ":nameOf(t)}</button>`).join("");
+  const st=expSel<0,cap=st?S.cap:S.tanks[expSel].cap,c=st?capCost():expCost(expSel),mx=!st&&cap>=20;
+  return `<h3 style="margin-top:0">拡張する水槽</h3><div class="baits">${chips}</div>`+item(`${st?"バケツ":"水槽"}を拡張（${cap}→${cap+(st?3:2)}匹）`,st?"釣った魚を多く入れておける":"もっと魚を飼える",st?"cap":"x"+expSel,mx?"MAX":yen(c),mx?1e18:c)
+   +`<p class="lbl">バケツが満員のとき釣れた魚は、自動で売られます。</p>`;
+}
+function dexView(){
+  return SPOTS.map((sp,s)=>{const ids=FISH.map((f,i)=>i).filter(i=>FISH[i].s===s);
+   return `<h3>${sp[0]}　${ids.filter(i=>S.seen[i]).length}/50</h3><div class="card"><div class="grid">${ids.map(i=>`<div class="cell ${S.seen[i]?"":"no"}">${art(i)}<em>${S.seen[i]?FISH[i].n:"？？？"}</em></div>`).join("")}</div></div>`}).join("");
+}
+function setView(){
+  return `<div class="card help"><details open><summary>ヘルプ</summary>
+  <p><b>遊び方</b><br>「釣り」タブでエサを選び、「釣り糸を垂らす」を押します。アタリが来たら、動くマーカーが枠に入った瞬間に「いまだ！」をタップ。枠は2種類で、真ん中の金色ならレアな魚、両側の緑ならふつうの魚が釣れます。枠を外すと逃げられ、エサも減ります。レア度（★）が高いほど、マーカーは速く動きます。</p>
+  <p><b>お金の増やし方</b><br>釣った魚はまず「バケツ」に入ります。「水族館」で好きな水槽に移すと、毎秒お金を生みます。魚が珍しいほど収入は多く、魚が住む場所と同じ水槽に入れると1.5倍になります。図鑑に載せた魚が1種増えるごとに、全体の収入が1%増えます。</p>
+  <p><b>釣り竿</b><br>強化するほど、レアな魚が釣れやすくなります。強化のたびに値段は大きく上がり、Lv.10が最大です。</p><p><b>エサと釣れる魚</b>（買うと5個）<br>ふつうのエサ：ふつう〜縞<br>オキアミ：ふつう〜紅<br>イカの切り身：縞〜黄金<br>活きエビ：紅〜幻<br>黄金ミミズ：黄金〜幻<br>魚の名前の頭に付く「縞・紅・黄金・幻」の順に珍しくなります。</p>
+  <p><b>水族館</b><br>水槽は5つあり、お金を払うと開きます。水槽をタップすると中が見られ、バケツの魚を「入れる」「戻す」ができます。水槽の名前は中の画面で自由に変えられ、「設備」の「水槽を拡張」では拡張する水槽やバケツを選べます。バケツが満員のときに釣れた魚は、自動で売られます。</p>
+  <p><b>スポット</b><br>お金を払うと新しい釣り場に行けます。スポットごとに50種、全部で250種の魚がいます。</p>
+  <p><b>図鑑</b><br>釣った魚が登録されます。名前に「縞」「紅」「黄金」「幻」が付く魚ほど珍しい魚です。</p>
+  <p><b>保存</b><br>進行状況はこのブラウザに自動で保存されます。</p></details></div>
+  <div class="card">${askReset?`<p class="msg">本当に最初からやり直しますか？</p><div class="row"><button class="buy" style="flex:1" onclick="reset(true)">はい</button><button class="buy" style="flex:1;background:var(--tab);color:var(--ink)" onclick="reset(false)">いいえ</button></div>`:`<button class="buy" onclick="reset()">最初からやり直す</button>`}</div>`;
+}
+function refresh(){
+  $("money").textContent=yen(S.money);
+  document.querySelectorAll("[data-c]").forEach(b=>b.disabled=+b.dataset.c>S.money);
+}
+function render(){
+  $("ps").textContent="毎秒 "+yen(ips());
+  $("zk").textContent="図鑑 "+Object.keys(S.seen).length+"/"+FISH.length;
+  $("nav").innerHTML=TABS.map((t,i)=>`<button class="${i===tab?"on":""}" onclick="tab=${i};render()">${t}</button>`).join("");
+  $("view").innerHTML=[spotView,fishView,aquaView,gearView,dexView,setView][tab]();
+  refresh();
+  if(cast&&cast.ph==="bite"&&!looping){looping=true;requestAnimationFrame(frame)}
+}
+let last=performance.now();
+setInterval(()=>{const n=performance.now();S.money+=ips()*(n-last)/1000;last=n;refresh();save()},1000);
+render();
+</script>
+</body>
+</html>
